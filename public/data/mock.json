@@ -1,0 +1,28 @@
+{
+    "products": [
+        {
+            "name": "Calça Alfaiataria Rendada",
+            "listPrice": 243.90,
+            "price": 225.90,
+            "image": "https://lojalancaperfume.vtexassets.com/arquivos/ids/504997-150-200/"
+        },
+        {
+            "name": "Calça Alfaiataria Rendada",
+            "listPrice": 243.90,
+            "price": 225.90,
+            "image": "https://lojalancaperfume.vtexassets.com/arquivos/ids/504997-150-200/"
+        },
+        {
+            "name": "Calça Alfaiataria Rendada",
+            "listPrice": 243.90,
+            "price": 225.90,
+            "image": "https://lojalancaperfume.vtexassets.com/arquivos/ids/504997-150-200/"
+        }
+    ],
+    "totals": {
+        "productsTotal": 677.70,
+        "shipping": 5.30,
+        "discount": 30.00,
+        "subtotal": 653.00
+    }
+}
