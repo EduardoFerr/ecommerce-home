@@ -1,37 +1,32 @@
 import { formatCurrency } from '../../utils/currency';
+import { memo } from 'react';
 
 interface PriceDisplayProps {
-    /** Preço atual com desconto aplicado */
     currentPrice: number;
-    /** Preço original de tabela */
     listPrice: number;
-    /** Flag que indica se o produto possui uma promoção ativa */
     hasDiscount: boolean;
-    /** Classes CSS adicionais para customização */
     className?: string;
 }
 
-/**
- * Atom: PriceDisplay
- * Responsável por renderizar o preço com a lógica de 'De/Por'.
- * Focado em acessibilidade usando as tags semânticas <ins> e <del>.
- */
-export const PriceDisplay = ({
+export const PriceDisplay = memo(({
     currentPrice,
     listPrice,
     hasDiscount,
     className = ""
 }: PriceDisplayProps) => {
+
     return (
-        <div className={`flex flex-col ${className}`}>
+        <div 
+            data-testid="price-display-container"
+            className={`flex flex-col ${className}`}>
             {hasDiscount && (
-                <del className="text-sm text-gray-500 line-through">
+                <del className="text-xs text-gray-600 line-through">
                     {formatCurrency(listPrice)}
                 </del>
             )}
-            <ins className="text-lg font-bold text-black no-underline">
+            <ins className="text-sm font-bold text-black no-underline">
                 {formatCurrency(currentPrice)}
             </ins>
         </div>
     );
-};
+});

@@ -1,52 +1,34 @@
 import type { Product, CartTotals } from '../@types/product';
-import type { RawProductMock, RawProductExternal, RawTotals } from '../@types/api';
+import type { RawProduct, RawTotals } from '../@types/api';
 
-/**
- * Adapter: adaptProducts
- * Transforma os dados brutos da API para o domínio da aplicação.
- * Respeita o 'S' do SOLID ao isolar a transformação.
- */
-export const adaptProducts = (
-    rawProducts: (RawProductMock | RawProductExternal)[]
-): Product[] => {
-    return rawProducts.map((raw, index) => {
-        const isExternal = 'priceSpecification' in raw;
-        const current = isExternal 
-            ? (raw as RawProductExternal).priceSpecification.price 
-            : (raw as RawProductMock).price;
-        
-        const list = isExternal 
-            ? (raw as RawProductExternal).priceSpecification.originalPrice 
-            : (raw as RawProductMock).listPrice;
+export const adaptProducts = (rawProducts: RawProduct[]): Product[] => {
+    return rawProducts.map((product, index) => {
+        const current = product.price;
+        const list = product.listPrice;
 
-        const generatedId = btoa(raw.name + raw.image).substring(0, 12);
+        const uniqueSalt = btoa(`${product.name}-${index}`).substring(0, 8);
+        const generatedId = `${uniqueSalt}-${index}`;
 
         return {
             id: generatedId,
             sku: generatedId,
-            name: raw.name,
-            imageUrl: raw.image,
+            name: product.name,
+            imageUrl: product.image,
             price: {
                 current,
                 list,
                 hasDiscount: list > current,
-                discountPercentage: list > current ? Math.round(((list - current) / list) * 100) : 0
+                discountPercentage:
+                    list > current ? Math.round(((list - current) / list) * 100) : 0,
             },
-            isPriority: index === 0 // SEO/LCP Hint
+            isPriority: index,
         };
     });
 };
 
-/**
- * Adapter: adaptTotals
- * Calcula o total líquido. 
- * Remove a lógica de negócio do Hook de UI (SOLID - S).
- */
-export const adaptTotals = (rawTotals: RawTotals): CartTotals => {
-    return {
-        subtotal: rawTotals.subtotal,
-        shipping: rawTotals.shipping,
-        discount: rawTotals.discount,
-        total: rawTotals.subtotal + rawTotals.shipping - rawTotals.discount
-    };
-};
+export const adaptTotals = (rawTotals: RawTotals): CartTotals => ({
+    subtotal: rawTotals.subtotal,
+    shipping: rawTotals.shipping,
+    discount: rawTotals.discount,
+    total: rawTotals.subtotal + rawTotals.shipping - rawTotals.discount,
+});

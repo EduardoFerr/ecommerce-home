@@ -2,25 +2,12 @@
  * Interfaces que representam o schema bruto (raw) dos JSONs de entrada.
  */
 
-export interface RawProductMock {
+
+export interface RawProduct {
   name: string;
   listPrice: number;
   price: number;
   image: string;
-}
-
-/**
- * Interface para a segunda estrutura de dados mencionada no desafio
- * (priceSpecification).
- */
-export interface RawProductExternal {
-  name: string;
-  image: string;
-  priceSpecification: {
-    price: number;
-    originalPrice: number;
-    percent?: number;
-  };
 }
 
 export interface RawTotals {
@@ -31,6 +18,6 @@ export interface RawTotals {
 }
 
 export interface ApiResponse {
-  products: (RawProductMock | RawProductExternal)[];
+  products: RawProduct[];
   totals: RawTotals;
 }

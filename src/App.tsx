@@ -1,34 +1,26 @@
-import { Header } from './components/organisms/Header.tsx';
-import { ProductGrid } from './components/organisms/ProductGrid.tsx';
-import { ProductCard } from './components/molecules/ProductCard.tsx';
-import { Footer } from './components/organisms/Footer';
-import { useProducts } from './hooks/useProducts.ts';
+import { lazy, Suspense } from "react";
+import { Header } from "./components/organisms/Header";
+import { Hero } from "./components/organisms/Hero";
+import { ProductGrid } from "./components/organisms/ProductGrid";
+import { ProductCard } from "./components/molecules/ProductCard";
+import { useProducts } from "./hooks/useProducts";
 
-/**
- * App: Orquestrador Final (Container Pattern)
- * Aqui é onde o acoplamento "saudável" acontece.
- * O App injeta as moléculas dentro dos organismos através de composição (children).
- * * Nota Técnica: Reintroduzidas as extensões .tsx e .ts para garantir 
- * compatibilidade com o bundler e as regras de resolução de módulos do ambiente.
- */
-function App() {
+// Lazy load do Footer, não crítico
+const Footer = lazy(() =>
+  import("./components/organisms/Footer").then((module) => ({
+    default: module.Footer,
+  }))
+);
+
+export default function App() {
   const { products, loading, error } = useProducts();
 
   return (
-    <div className="min-h-screen bg-white font-sans text-black selection:bg-black selection:text-white">
-      {/* Organismo de Cabeçalho */}
+    <div className="min-h-screen bg-white font-sans text-black antialiased">
       <Header />
 
       <main>
-        {/* Secção Hero Minimalista */}
-        <section className="bg-gray-50 py-12 text-center md:py-20">
-          <h1 className="text-3xl font-light uppercase tracking-[0.2em] md:text-5xl">
-            New Arrivals
-          </h1>
-          <p className="mt-4 text-sm text-gray-500 uppercase tracking-widest">
-            Explora as últimas tendências da estação
-          </p>
-        </section>
+        <Hero />
 
         <ProductGrid isLoading={loading} error={error}>
           {products.map((product) => (
@@ -37,10 +29,9 @@ function App() {
         </ProductGrid>
       </main>
 
-
-      <Footer />
+      <Suspense fallback={<div className="h-64 bg-gray-50" />}>
+        <Footer />
+      </Suspense>
     </div>
   );
 }
-
-export default App;

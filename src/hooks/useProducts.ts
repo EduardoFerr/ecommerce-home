@@ -1,17 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { Product, CartTotals } from '../@types/product';
+import type { ApiResponse } from '../@types/api';
 import { ProductService } from '../services/product.service';
 import { adaptProducts, adaptTotals } from '../adapters/product.adapter';
 
-/**
- * Hook: useProducts
- * Agora focado apenas em gestão de ESTADO e CICLO DE VIDA.
- * A lógica de cálculo foi movida para os adapters.
- */
 export const useProducts = () => {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [totals, setTotals] = useState<CartTotals | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [rawData, setRawData] = useState<ApiResponse | null>(null);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -20,17 +15,15 @@ export const useProducts = () => {
         const loadData = async () => {
             try {
                 setLoading(true);
-                // O Service apenas busca (I/O)
                 const data = await ProductService.getCatalog();
-
                 if (isMounted) {
-                    // Os Adapters tratam a lógica de negócio e transformação
-                    setProducts(adaptProducts(data.products));
-                    setTotals(adaptTotals(data.totals));
+                    setRawData(data);
+                    setError(null);
                 }
             } catch (err) {
                 if (isMounted) {
-                    setError(err instanceof Error ? err.message : 'Erro na API');
+                    setError(err instanceof Error ? err.message : 'Erro na comunicação com a API');
+                    console.error('[useProducts] Fetch Error:', err);
                 }
             } finally {
                 if (isMounted) setLoading(false);
@@ -38,8 +31,21 @@ export const useProducts = () => {
         };
 
         loadData();
-        return () => { isMounted = false; };
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
+
+    const products: Product[] = useMemo(() => {
+        if (!rawData?.products) return [];
+        return adaptProducts(rawData.products);
+    }, [rawData?.products]);
+
+    const totals: CartTotals | null = useMemo(() => {
+        if (!rawData?.totals) return null;
+        return adaptTotals(rawData.totals);
+    }, [rawData?.totals]);
 
     return { products, totals, loading, error };
 };

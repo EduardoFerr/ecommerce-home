@@ -1,62 +1,82 @@
+import { memo } from 'react';
 import type { Product } from '../../@types/product.ts';
 import { useCart } from '../../hooks/useCart.ts';
-import { Badge } from '../atoms/Badge.tsx';
 import { ProductImage } from '../atoms/ProductImage.tsx';
 import { PriceDisplay } from '../atoms/PriceDisplay.tsx';
+import { Badge } from '../atoms/Badge.tsx';
 
 interface ProductCardProps {
     product: Product;
 }
 
-/**
- * Molecule: ProductCard
- * Componente que exibe as informações do produto e permite a compra.
- * Atualizado para utilizar átomos especializados que otimizam o LCP e CLS.
- * Nota Técnica: Adicionadas extensões explícitas .ts e .tsx para garantir
- * a resolução de módulos no ambiente de compilação.
- */
-export const ProductCard = ({ product }: ProductCardProps) => {
+export const ProductCard = memo(({ product }: ProductCardProps) => {
     const { addItem } = useCart();
 
+    const discount = product.price.list && product.price.list > product.price.current
+        ? Math.round(((product.price.list - product.price.current) / product.price.list) * 100)
+        : null;
+
     return (
-        <div className="group relative flex flex-col bg-white overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-shadow">
-            {/* Atom: ProductImage - Gere aspect-ratio e fetchpriority para performance */}
-            <ProductImage
-                src={product.imageUrl}
-                alt={product.name}
-                isPriority={product.isPriority}
-            />
+        <article className="flex flex-col space-y-3 bg-white relative">
+            {/* 1. Imagem com Badge de Desconto */}
+            <div className="relative">
+                <ProductImage
+                    src={product.imageUrl}
+                    alt={product.name}
+                    isPriority={product.isPriority}
+                    width="150"
+                    height="200"
+                />
+                {discount && (
+                    <div className="absolute top-2 left-2">
+                        <Badge variant="discount">
+                            {discount}% OFF
+                        </Badge>
+                    </div>
+                )}
+            </div>
 
-            {product.price.hasDiscount && (
-                <div className="absolute top-2 left-2 z-10">
-                    <Badge variant="discount">
-                        {product.price.discountPercentage}% OFF
-                    </Badge>
-                </div>
-            )}
-
-            {/* Info do Produto */}
-            <div className="flex flex-1 flex-col p-4">
-                <h3 className="text-sm font-medium text-gray-700 h-10 overflow-hidden line-clamp-2">
-                    {product.name}
-                </h3>
-
-                {/* Atom: PriceDisplay - Centraliza a lógica de formatação e de/por */}
+            {/* 2. Preço com contraste suficiente */}
+            <div className="pt-2 border-t border-gray-100">
                 <PriceDisplay
                     currentPrice={product.price.current}
                     listPrice={product.price.list}
                     hasDiscount={product.price.hasDiscount}
-                    className="mt-2"
+                    className="mt-2 text-gray-700" // Ajuste contraste
                 />
-
-                {/* Botão de Ação */}
-                <button
-                    onClick={() => addItem(product)}
-                    className="mt-4 w-full bg-black text-white py-2 px-4 rounded-md text-sm font-semibold hover:bg-gray-800 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-black"
-                >
-                    Adicionar ao Carrinho
-                </button>
             </div>
-        </div>
+
+            {/* 3 & 4. Textos */}
+            <div className="flex flex-col space-y-1">
+                <h2 className="text-sm font-bold text-black uppercase tracking-wider">
+                    {product.name}
+                </h2>
+                <p className="text-[10px] text-gray-700 uppercase leading-tight font-medium">
+                    Consetetur sadipscing tsed diam nonumy eirmod.
+                </p>
+            </div>
+
+            {/* 5. Botão "Add to Cart" */}
+            <button
+                onClick={() => addItem(product)}
+                type="button"
+                className="flex items-center w-fit bg-[#E5E5E5] hover:bg-[#D4D4D4] transition-colors group"
+                data-testid="buy-button"
+            >
+                <div className="p-2 border-r border-gray-300/50">
+                    <svg 
+                        className="w-4 h-4 text-gray-700 group-hover:text-black" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </div>
+                <span className="px-3 py-2 text-[10px] font-bold uppercase tracking-[0.15em] text-gray-700">
+                    Add to Cart
+                </span>
+            </button>
+        </article>
     );
-};
+});

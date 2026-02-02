@@ -13,11 +13,3 @@ export const formatCurrency = (value: number): string => {
     return BRL_FORMATTER.format(value);
 };
 
-
-/**
- * Calcula a diferença de preço para exibição de descontos.
- */
-export const calculateDiscount = (listPrice: number, price: number): number => {
-    if (listPrice <= price) return 0;
-    return ((listPrice - price) / listPrice) * 100;
-};

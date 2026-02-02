@@ -21,12 +21,7 @@ export interface Product {
 
     price: ProductPrice;      // Objeto de preço estruturado
 
-    /**
-     * Metadado para Core Web Vitals (Performance)
-     * Se true, o componente deve renderizar a imagem com:
-     * fetchpriority="high" e loading="eager"
-     */
-    isPriority?: boolean;
+    isPriority?: number;
 }
 
 /**

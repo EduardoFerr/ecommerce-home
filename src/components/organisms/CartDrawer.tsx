@@ -7,21 +7,11 @@ interface CartDrawerProps {
     onClose: () => void;
 }
 
-/**
- * Organism: CartDrawer
- * Componente lateral otimizado para Core Web Vitals.
- * - Performance: Hardware acceleration para animações (INP).
- * - Layout Stability: Aspect-ratio fixo nas imagens para evitar CLS.
- * - UX: Bloqueio de scroll via useEffect para acessibilidade.
- */
 export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
     const { items, removeItem, updateQuantity, cartTotal, totalItems } =
         useCart();
 
-    /**
-     * Bloqueio de Scroll: Essencial para UX e acessibilidade.
-     * Evita o "layout shifting" visual de scroll duplo.
-     */
+
     useEffect(() => {
         if (typeof document !== "undefined") {
             document.body.style.overflow = isOpen ? "hidden" : "unset";
@@ -42,7 +32,6 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                 aria-hidden="true"
             />
 
-            {/* Drawer: Utiliza transform para animações mais fluidas (INP) */}
             <div
                 role="dialog"
                 aria-modal="true"
@@ -50,7 +39,6 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                 className={`fixed right-0 top-0 z-[101] h-full w-full max-w-md bg-white shadow-2xl transition-transform duration-500 ease-out flex flex-col will-change-transform ${isOpen ? "translate-x-0" : "translate-x-full"
                     }`}
             >
-                {/* Cabeçalho */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-100">
                     <h2 className="text-xl font-black tracking-tighter uppercase">
                         Carrinho{" "}
@@ -79,7 +67,6 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                     </button>
                 </div>
 
-                {/* Lista de Itens: Overflow-y-auto com smooth scrolling nativo */}
                 <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-gray-200">
                     {items.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
@@ -99,7 +86,6 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                                 key={item.sku}
                                 className="flex gap-4 group animate-in fade-in slide-in-from-right-4 duration-300"
                             >
-                                {/* Imagem: aspect-ratio para evitar CLS */}
                                 <div className="h-32 w-24 flex-shrink-0 overflow-hidden bg-gray-50 border border-gray-100 relative aspect-[3/4]">
                                     <img
                                         src={item.imageUrl}
@@ -120,7 +106,6 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                                     </div>
 
                                     <div className="flex items-center justify-between mt-4">
-                                        {/* Controlo de Quantidade Otimizado */}
                                         <div className="flex items-center border border-gray-200 bg-white">
                                             <button
                                                 onClick={() =>
@@ -161,7 +146,6 @@ export const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                     )}
                 </div>
 
-                {/* Footer do Carrinho: Sticky Bottom para fácil acesso */}
                 <div className="p-6 border-t border-gray-100 bg-gray-50/80 backdrop-blur-sm">
                     <div className="space-y-3 mb-6">
                         <div className="flex justify-between text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">

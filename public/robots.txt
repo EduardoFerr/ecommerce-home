@@ -1,0 +1,36 @@
+# ========================================================
+# Loja La Moda - robots.txt
+# Controla o acesso dos motores de busca ao site
+# ========================================================
+
+# Permite que todos os motores de busca rastreiem todo o site
+User-agent: *
+Disallow: /
+
+# Bloqueia diretórios que não devem ser indexados
+Disallow: /admin/
+Disallow: /private/
+Disallow: /src/
+Disallow: /node_modules/
+Disallow: /scripts/
+
+# Sitemap para motores de busca
+#Sitemap: https://www.lamoda.com.br/sitemap.xml
+
+# ========================================================
+# Googlebot específico
+# ========================================================
+User-agent: Googlebot
+Allow: /
+
+# ========================================================
+# Bloqueia bots maliciosos conhecidos
+# (exemplo de alguns user-agents comuns de spam)
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /

@@ -1,30 +1,24 @@
+import { memo, type ReactNode } from 'react';
+
 interface BadgeProps {
-    children: React.ReactNode;
+    children: ReactNode;
     variant?: 'discount' | 'new';
     className?: string;
 }
 
-/**
- * Atom: Badge
- * Elemento visual para destacar informações como percentual de desconto.
- */
-export const Badge = ({
+export const Badge = memo(({
     children,
     variant = 'discount',
     className = ""
 }: BadgeProps) => {
     const variants = {
-        discount: 'bg-lamoda-black text-white',
-        new: 'bg-lamoda-light text-lamoda-black border border-lamoda-black'
+        discount: 'bg-black text-white',
+        new: 'bg-gray-100 text-black border border-black'
     };
 
     return (
-        <span className={`
-      inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider
-      ${variants[variant]} 
-      ${className}
-    `}>
+        <span className={`inline-block px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${variants[variant]} ${className}`}>
             {children}
         </span>
     );
-};
+});

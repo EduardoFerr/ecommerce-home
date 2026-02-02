@@ -1,31 +1,33 @@
+import { memo } from 'react';
 interface ProductImageProps {
-    src: string;
+    width?: string;
+    height?: string;
+    src?: string;
     alt: string;
-    isPriority?: boolean;
+    isPriority?: number;
     className?: string;
 }
 
-/**
- * Atom: ProductImage
- * Implementa estratégias de Core Web Vitals (LCP).
- * - aspect-ratio fixo para evitar CLS.
- * - fetchpriority="high" para imagens acima da dobra.
- */
-export const ProductImage = ({
+export const ProductImage = memo(({
+    width="150",
+    height="200",
     src,
     alt,
-    isPriority = false,
+    isPriority=10,
     className = ""
 }: ProductImageProps) => {
     return (
         <div className={`relative overflow-hidden bg-lamoda-light aspect-product ${className}`}>
             <img
-                src={src}
+                width={width}
+                height={height}
+                src={src ?? "/images/placeholder.webp"}
                 alt={alt}
-                loading={isPriority ? "eager" : "lazy"}
-                fetchPriority={isPriority ? "high" : "low"}
+                decoding={isPriority > 0 ? "sync" : "async"}
+                loading={isPriority < 4? "eager" : "lazy"}
+                fetchPriority={isPriority < 4 ? "high" : "low"}
                 className="h-full w-full object-cover object-center transition-transform duration-500 hover:scale-105"
             />
         </div>
     );
-};
+});

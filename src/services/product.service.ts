@@ -1,22 +1,25 @@
 import type { ApiResponse } from '../@types/api';
 
-/**
- * Service: ProductService
- * Camada de Infraestrutura (S do SOLID - Single Responsibility).
- * Isola o método de obtenção de dados (Fetch API).
- */
+let cachedCatalog: ApiResponse | null = null;
+let fetchPromise: Promise<ApiResponse> | null = null;
+
+
 export const ProductService = {
-    /**
-     * Obtém os dados do catálogo. 
-     * Localização: public/data/mock.json
-     */
     async getCatalog(): Promise<ApiResponse> {
-        const response = await fetch('/data/mock.json');
+        if (cachedCatalog) return cachedCatalog;
+        if (fetchPromise) return fetchPromise;
 
-        if (!response.ok) {
-            throw new Error(`Erro na rede: ${response.status} ${response.statusText}`);
-        }
+        fetchPromise = fetch('/data/mock.json')
+            .then(async (response) => {
+                if (!response.ok) throw new Error(`Erro na rede: ${response.status}`);
+                const data = (await response.json()) as ApiResponse;
+                cachedCatalog = data;       // salva no cache
+                return data;
+            })
+            .finally(() => {
+                fetchPromise = null;        // libera a promise
+            });
 
-        return (await response.json()) as ApiResponse;
-    }
+        return fetchPromise;
+    },
 };
