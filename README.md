@@ -75,16 +75,11 @@ npm run dev
 1. Subir o ambiente:
 
    ```bash
-   docker-compose up --build
+   docker compose up --build
    ```
 
    > A aplicação ficará disponível em http://localhost:5173.
 
-2. Parar o ambiente:
-
-```bash
- docker-compose down
-```
 
 ### 🧪 Estratégia de Testes e Confiabilidade
 
