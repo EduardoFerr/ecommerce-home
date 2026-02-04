@@ -1,6 +1,6 @@
 # LA MODA - E-commerce de Moda Minimalista
 
-Este projeto é uma aplicação de e-commerce de alta performance (Core Web Vitals), desenvolvida com **React**, **TypeScript** e **Tailwind CSS**. A arquitetura foi desenhada seguindo os princípios **SOLID** e **Atomic Design**, focando-se em métricas de performance (**Core Web Vitals**) e uma experiência de utilizador fluida.
+Este projeto é uma aplicação de e-commerce de alta performance, desenvolvida com **React**, **TypeScript** e **Tailwind CSS**. A arquitetura foi desenhada seguindo os princípios **SOLID** e **Atomic Design**, focando-se em métricas de performance (**Core Web Vitals**) e uma experiência de utilizador fluida.
 
 ---
 
