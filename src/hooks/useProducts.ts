@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import type { Product, CartTotals } from '../@types/product';
 import type { ApiResponse } from '../@types/api';
-import { ProductService } from '../services/product.service';
+import { productService } from '../services/product.service';
 import { adaptProducts, adaptTotals } from '../adapters/product.adapter';
 
 export const useProducts = () => {
@@ -15,7 +15,7 @@ export const useProducts = () => {
         const loadData = async () => {
             try {
                 setLoading(true);
-                const data = await ProductService.getCatalog();
+                const data = await productService.getCatalog();
                 if (isMounted) {
                     setRawData(data);
                     setError(null);

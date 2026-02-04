@@ -1,25 +1,31 @@
+// src/services/product.service.ts
 import type { ApiResponse } from '../@types/api';
+import { httpClient, type HttpClient } from './api.client';
 
-let cachedCatalog: ApiResponse | null = null;
-let fetchPromise: Promise<ApiResponse> | null = null;
+class ProductService {
+    private cachedCatalog: ApiResponse | null = null;
+    private fetchPromise: Promise<ApiResponse> | null = null;
+    private client: HttpClient;
 
+    constructor(client: HttpClient = httpClient) {
+        this.client = client;
+    }
 
-export const ProductService = {
     async getCatalog(): Promise<ApiResponse> {
-        if (cachedCatalog) return cachedCatalog;
-        if (fetchPromise) return fetchPromise;
+        if (this.cachedCatalog) return this.cachedCatalog;
+        if (this.fetchPromise) return this.fetchPromise;
 
-        fetchPromise = fetch('/data/mock.json')
-            .then(async (response) => {
-                if (!response.ok) throw new Error(`Erro na rede: ${response.status}`);
-                const data = (await response.json()) as ApiResponse;
-                cachedCatalog = data;       // salva no cache
+        this.fetchPromise = this.client.get<ApiResponse>('/data/mock.json')
+            .then((data) => {
+                this.cachedCatalog = data;
                 return data;
             })
             .finally(() => {
-                fetchPromise = null;        // libera a promise
+                this.fetchPromise = null;
             });
 
-        return fetchPromise;
-    },
-};
+        return this.fetchPromise;
+    }
+}
+
+export const productService = new ProductService();

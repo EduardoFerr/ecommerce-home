@@ -1,0 +1,9 @@
+services:
+  test:
+    container_name: ecommerce-lamoda-test
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    volumes:
+      - .:/app
+    tty: true
